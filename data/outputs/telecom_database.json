@@ -1,0 +1,136 @@
+{
+    "telecom_data": [
+        {
+            "index": 0,
+            "Company": "AT&T",
+            "Quarter": "2021Q1",
+            "Percentage Change": 4.110059767278522,
+            "Volume": 3620696860,
+            "Volatility": 0.4816059705193589,
+            "Quarter ROI (%)": 2.994212535825267,
+            "ROI on $1500 ($)": 44.91318803737901,
+            "Cumulative ROI on $1500 ($)": 44.91318803737901
+        },
+        {
+            "index": 1,
+            "Company": "AT&T",
+            "Quarter": "2021Q2",
+            "Percentage Change": -5.940267958433092,
+            "Volume": 3756694829,
+            "Volatility": 0.8904636704538818,
+            "Quarter ROI (%)": -4.828039577528374,
+            "ROI on $1500 ($)": -72.42059366292561,
+            "Cumulative ROI on $1500 ($)": -27.507405625546603
+        },
+        {
+            "index": 2,
+            "Company": "AT&T",
+            "Quarter": "2021Q3",
+            "Percentage Change": -5.599447845480015,
+            "Volume": 2709809752,
+            "Volatility": 0.40267793934238644,
+            "Quarter ROI (%)": -6.507439495018002,
+            "ROI on $1500 ($)": -97.61159242527003,
+            "Cumulative ROI on $1500 ($)": -125.11899805081663
+        },
+        {
+            "index": 3,
+            "Company": "AT&T",
+            "Quarter": "2021Q4",
+            "Percentage Change": -8.983804046329197,
+            "Volume": 4452803979,
+            "Volatility": 0.9385283090171035,
+            "Quarter ROI (%)": -9.35888636872864,
+            "ROI on $1500 ($)": -140.38329553092962,
+            "Cumulative ROI on $1500 ($)": -265.50229358174624
+        },
+        {
+            "index": 4,
+            "Company": "T-Mobile",
+            "Quarter": "2021Q1",
+            "Percentage Change": -6.176842957174915,
+            "Volume": 298304900,
+            "Volatility": 4.14177517298823,
+            "Quarter ROI (%)": -6.708862197685958,
+            "ROI on $1500 ($)": -100.63293296528937,
+            "Cumulative ROI on $1500 ($)": -100.63293296528937
+        },
+        {
+            "index": 5,
+            "Company": "T-Mobile",
+            "Quarter": "2021Q2",
+            "Percentage Change": 13.756368960503524,
+            "Volume": 258023500,
+            "Volatility": 6.0631105895471515,
+            "Quarter ROI (%)": 15.072303455195524,
+            "ROI on $1500 ($)": 226.08455182793284,
+            "Cumulative ROI on $1500 ($)": 125.45161886264347
+        },
+        {
+            "index": 6,
+            "Company": "T-Mobile",
+            "Quarter": "2021Q3",
+            "Percentage Change": -11.35956716859482,
+            "Volume": 286484700,
+            "Volatility": 7.235863362816997,
+            "Quarter ROI (%)": -11.60923753240012,
+            "ROI on $1500 ($)": -174.13856298600183,
+            "Cumulative ROI on $1500 ($)": -48.68694412335836
+        },
+        {
+            "index": 7,
+            "Company": "T-Mobile",
+            "Quarter": "2021Q4",
+            "Percentage Change": -8.078262322967625,
+            "Volume": 324331000,
+            "Volatility": 3.704423954967091,
+            "Quarter ROI (%)": -8.734654008644005,
+            "ROI on $1500 ($)": -131.01981012966007,
+            "Cumulative ROI on $1500 ($)": -179.70675425301843
+        },
+        {
+            "index": 8,
+            "Company": "Verizon",
+            "Quarter": "2021Q1",
+            "Percentage Change": -0.7646507390141577,
+            "Volume": 1270636400,
+            "Volatility": 1.3299551111144836,
+            "Quarter ROI (%)": -1.3738086349581813,
+            "ROI on $1500 ($)": -20.60712952437272,
+            "Cumulative ROI on $1500 ($)": -20.60712952437272
+        },
+        {
+            "index": 9,
+            "Company": "Verizon",
+            "Quarter": "2021Q2",
+            "Percentage Change": -4.356776927559029,
+            "Volume": 1031240300,
+            "Volatility": 0.9562556242520268,
+            "Quarter ROI (%)": -3.4298546410999107,
+            "ROI on $1500 ($)": -51.44781961649866,
+            "Cumulative ROI on $1500 ($)": -72.05494914087139
+        },
+        {
+            "index": 10,
+            "Company": "Verizon",
+            "Quarter": "2021Q3",
+            "Percentage Change": -3.17996249140863,
+            "Volume": 951584000,
+            "Volatility": 0.7405645363657398,
+            "Quarter ROI (%)": -3.8625880595494744,
+            "ROI on $1500 ($)": -57.93882089324212,
+            "Cumulative ROI on $1500 ($)": -129.9937700341135
+        },
+        {
+            "index": 11,
+            "Company": "Verizon",
+            "Quarter": "2021Q4",
+            "Percentage Change": -3.86740055916578,
+            "Volume": 1373874500,
+            "Volatility": 1.1070567759625751,
+            "Quarter ROI (%)": -3.813404953414722,
+            "ROI on $1500 ($)": -57.201074301220835,
+            "Cumulative ROI on $1500 ($)": -187.19484433533432
+        }
+    ]
+}

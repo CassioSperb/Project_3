@@ -1,20 +1,10 @@
-// The data from the JSON file is arbitrarily named importedData as the argument.
-d3.json("outputs/oil_database.json").then((importedData) => {
-  // console.log(importedData);
-    let data = importedData;
-  // Sort the data array by using the miles value.
-  data.sort(function(a, b) {
-    return parseFloat(b.miles) - parseFloat(a.miles);
-  });
-
-  // Slice the first 10 objects for plotting.
-  data = data.slice(0, 10);
-
-  // Reverse the array because of the Plotly defaults.
-  data = data.reverse();
-
-
-
+<!DOCTYPE HTML>
+<html>
+<head>
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.canvasjs.com/canvasjs.stock.min.js"></script>
+    <script type="text/javascript">
+    window.onload = function () {
         $.getJSON("outputs/oil_database.json", function(data) {
             let chartData = {};
             

@@ -1,0 +1,136 @@
+{
+    "oil_data": [
+        {
+            "index": 0,
+            "Company": "Chevron",
+            "Quarter": "2021Q1",
+            "Percentage Change": 24.601586816809597,
+            "Volume": 705058900,
+            "Volatility": 7.943148810723182,
+            "Quarter ROI (%)": 23.06517796559219,
+            "ROI on $1500 ($)": 345.97766948388283,
+            "Cumulative ROI on $1500 ($)": 345.97766948388283
+        },
+        {
+            "index": 1,
+            "Company": "Chevron",
+            "Quarter": "2021Q2",
+            "Percentage Change": -1.8061500350916075,
+            "Volume": 608668800,
+            "Volatility": 2.5888034942282467,
+            "Quarter ROI (%)": -0.49401886937825945,
+            "ROI on $1500 ($)": -7.4102830406738915,
+            "Cumulative ROI on $1500 ($)": 338.56738644320893
+        },
+        {
+            "index": 2,
+            "Company": "Chevron",
+            "Quarter": "2021Q3",
+            "Percentage Change": -2.626872177362844,
+            "Volume": 669614200,
+            "Volatility": 3.0210841458149598,
+            "Quarter ROI (%)": -5.1425901420658215,
+            "ROI on $1500 ($)": -77.13885213098732,
+            "Cumulative ROI on $1500 ($)": 261.42853431222164
+        },
+        {
+            "index": 3,
+            "Company": "Chevron",
+            "Quarter": "2021Q4",
+            "Percentage Change": 12.508382242239014,
+            "Volume": 658214400,
+            "Volatility": 3.7428362271423685,
+            "Quarter ROI (%)": 14.801405862587307,
+            "ROI on $1500 ($)": 222.02108793880961,
+            "Cumulative ROI on $1500 ($)": 483.44962225103126
+        },
+        {
+            "index": 4,
+            "Company": "ConocoPhillips",
+            "Quarter": "2021Q1",
+            "Percentage Change": 34.72327971805367,
+            "Volume": 689248900,
+            "Volatility": 5.7977764987923015,
+            "Quarter ROI (%)": 30.790126470871915,
+            "ROI on $1500 ($)": 461.8518970630787,
+            "Cumulative ROI on $1500 ($)": 461.8518970630787
+        },
+        {
+            "index": 5,
+            "Company": "ConocoPhillips",
+            "Quarter": "2021Q2",
+            "Percentage Change": 11.958532080212589,
+            "Volume": 537368600,
+            "Volatility": 3.799867383795539,
+            "Quarter ROI (%)": 14.646089515119076,
+            "ROI on $1500 ($)": 219.69134272678613,
+            "Cumulative ROI on $1500 ($)": 681.5432397898649
+        },
+        {
+            "index": 6,
+            "Company": "ConocoPhillips",
+            "Quarter": "2021Q3",
+            "Percentage Change": 8.492366510622821,
+            "Volume": 550913900,
+            "Volatility": 3.58890112339051,
+            "Quarter ROI (%)": 8.103362781368919,
+            "ROI on $1500 ($)": 121.55044172053377,
+            "Cumulative ROI on $1500 ($)": 803.0936815103986
+        },
+        {
+            "index": 7,
+            "Company": "ConocoPhillips",
+            "Quarter": "2021Q4",
+            "Percentage Change": 2.4393710723174107,
+            "Volume": 511491700,
+            "Volatility": 1.9304628800656312,
+            "Quarter ROI (%)": 5.557185148275023,
+            "ROI on $1500 ($)": 83.35777722412534,
+            "Cumulative ROI on $1500 ($)": 886.451458734524
+        },
+        {
+            "index": 8,
+            "Company": "Exxon Mobil",
+            "Quarter": "2021Q1",
+            "Percentage Change": 35.78312885330384,
+            "Volume": 1929528100,
+            "Volatility": 5.507866462999324,
+            "Quarter ROI (%)": 34.692402420828,
+            "ROI on $1500 ($)": 520.3860363124201,
+            "Cumulative ROI on $1500 ($)": 520.3860363124201
+        },
+        {
+            "index": 9,
+            "Company": "Exxon Mobil",
+            "Quarter": "2021Q2",
+            "Percentage Change": 9.252485502289085,
+            "Volume": 1505610200,
+            "Volatility": 2.8153124818788884,
+            "Quarter ROI (%)": 12.002844767152423,
+            "ROI on $1500 ($)": 180.04267150728634,
+            "Cumulative ROI on $1500 ($)": 700.4287078197065
+        },
+        {
+            "index": 10,
+            "Company": "Exxon Mobil",
+            "Quarter": "2021Q3",
+            "Percentage Change": -4.963641278788347,
+            "Volume": 1325173700,
+            "Volatility": 2.4727654003764052,
+            "Quarter ROI (%)": -8.565213709617165,
+            "ROI on $1500 ($)": -128.47820564425746,
+            "Cumulative ROI on $1500 ($)": 571.950502175449
+        },
+        {
+            "index": 11,
+            "Company": "Exxon Mobil",
+            "Quarter": "2021Q4",
+            "Percentage Change": -0.31183099582693535,
+            "Volume": 1284388400,
+            "Volatility": 1.70873852055136,
+            "Quarter ROI (%)": 2.9961265508645027,
+            "ROI on $1500 ($)": 44.94189826296754,
+            "Cumulative ROI on $1500 ($)": 616.8924004384165
+        }
+    ]
+}
