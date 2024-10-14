@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis: Oil Sector</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        head {
+            background-color: #333333;
+            color: #ffffff;
+            padding: 20px;
+            text-align: left;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #000000;
+        }
+        h1 {
+            margin: 20px 0;
+            font-size: 24px;
+        }
+        .menu {
+            margin: 20px 0;
+        }
+        .menu button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #555555;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+        .menu button:hover {
+            background-color: #333333;
+        }
+        .chart-container {
+            background-color: #cccccc;
+            padding: 200px auto;
+            margin: 20px auto;
+            border-radius: 20px;
+            width: 90%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            height: auto;
+        }
+        .chart-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 50px auto;
+            height: 450px;
+                
+        }
+        .chart-item {
+            width: 80%;
+        }
+        footer {
+            background-color: #333333;
+            color: #ffffff;
+            padding: 20px;
+            text-align: left;
+        }
+        .footer-box {
+            display: flex;
+            justify-content: space-around;
+            max-width: 2200px auto;
+            margin: 10 auto;
+            padding: 0 20px; /* Add horizontal padding between the divs */
+        }
+        .footer-box div {
+            text-align: left;
+            padding: 0 20px; /* Add horizontal padding between the divs */
+        }
+        .dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        .dark-mode .chart-container {
+            background-color: #444444;
+        }
+        .dark-mode footer {
+            background-color: #1f1f1f;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Stock Analysis: Oil Sector</h1>
+
+    <!-- Menu for switching between Oil and Telecom -->
+    <div class="menu">
+        <button onclick="loadOilData()">Oil Sector</button>
+        <button onclick="loadTelecomData()">Telecom Sector</button>
+        <button onclick="toggleMode()">Toggle Dark/Light Mode</button>
+    </div>
+
+    <!-- Chart Container for displaying 4 charts in two rows -->
+    <div id="chartContainer" class="chart-container">
+        <div class="chart-row">
+            <div id="percentageChangeChart" class="chart-item"></div>
+            <div id="volumeChart" class="chart-item"></div>
+        </div>
+        <div class="chart-row">
+            <div id="volatilityChart" class="chart-item"></div>
+            <div id="roiChart" class="chart-item"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-box">
+            <div>
+                <h4>Team Members</h4>
+                Cassio Sperb, Juan Avila, Kendall Burkett, Patricia Taylor, Rahmeen Zindani
+            </div>
+            <div>
+                <h4>Project</h4>
+                Data Visualization Track<br>
+            </div>
+            <div>
+                <h4>University of Texas</h4>
+                Bootcamp in Data Analytics<br>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Load Google Charts
+        google.charts.load('current', { packages: ['corechart'] });
+
+        // Toggle between dark mode and light mode
+        function toggleMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // Load the oil data
+        function loadOilData() {
+            d3.json("../data/outputs/oil_database.json").then(function(data) {
+                renderCharts(data.oil_data, "Oil Sector");
+            });
+        }
+
+        // Load the telecom data
+        function loadTelecomData() {
+            d3.json("../data/outputs/telecom_database.json").then(function(data) {
+                renderCharts(data.telecom_data, "Telecom Sector");
+            });
+        }
+
+        // Function to render all charts
+        function renderCharts(data, sector) {
+            document.querySelector('h1').textContent = `Stock Analysis: ${sector}`;
+
+            // Prepare the data for each chart
+            const companies = [...new Set(data.map(d => d.Company))];
+
+            const percentageChangeData = companies.map(company => ({
+                company,
+                values: data.filter(d => d.Company === company).map(d => [d.Quarter, d["Percentage Change"]])
+            }));
+
+            const volumeData = companies.map(company => ({
+                company,
+                values: data.filter(d => d.Company === company).map(d => [d.Quarter, d.Volume / 100000000]) // Convert to Hundreds of Millions
+            }));
+
+            const volatilityData = companies.map(company => ({
+                company,
+                values: data.filter(d => d.Company === company).map(d => [d.Quarter, d.Volatility])
+            }));
+
+            const roiData = companies.map(company => ({
+                company,
+                values: data.filter(d => d.Company === company).map(d => [d.Quarter, d["Cumulative ROI on $1500 ($)"]])
+            }));
+
+            // Render the charts
+            renderGoogleChart("#percentageChangeChart", percentageChangeData, "Percentage Change");
+            renderGoogleChart("#volumeChart", volumeData, "Volume (Hundreds of Millions)");
+            renderGoogleChart("#volatilityChart", volatilityData, "Volatility");
+            renderGoogleChart("#roiChart", roiData, "Cumulative ROI on $1500 ($)");
+        }
+
+        // Helper function to render Google Line Chart
+        function renderGoogleChart(containerId, data, title) {
+            const chartContainer = document.querySelector(containerId);
+            chartContainer.innerHTML = ''; // Clear the container
+
+            let dataTable = new google.visualization.DataTable();
+            dataTable.addColumn('string', 'Quarter');
+
+            data.forEach((companyData, i) => {
+                dataTable.addColumn('number', companyData.company);
+            });
+
+            const rows = [];
+            const maxRows = Math.max(...data.map(d => d.values.length));
+
+            for (let i = 0; i < maxRows; i++) {
+                const row = [data[0].values[i][0]]; // Quarter
+                data.forEach(d => {
+                    row.push(d.values[i] ? d.values[i][1] : null); // Value or null
+                });
+                rows.push(row);
+            }
+
+            dataTable.addRows(rows);
+
+            const options = {
+                title: title,
+                curveType: 'function',
+                legend: { position: 'bottom' },
+                backgroundColor: { fill: '#cccccc' },
+                hAxis: { title: 'Quarter' },
+                vAxis: { title: title },
+                chartArea: { width: '80%', height: '70%' }
+            };
+
+            const chart = new google.visualization.LineChart(chartContainer);
+            chart.draw(dataTable, options);
+        }
+
+        // Load the default data (Oil Sector) on page load
+        google.charts.setOnLoadCallback(loadOilData);
+    </script>
+</body>
+</html>
