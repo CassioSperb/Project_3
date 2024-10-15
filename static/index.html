@@ -3,29 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Analysis: Oil Sector</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Stock Analysis: Oil and Telecom Sectors</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         body {
-            background-color: #121212;
-            color: #e0e0e0;
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 0;
-            padding: 10;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #000000;
         }
         h1 {
-            color: #ffffff;
+            margin: 20px 0;
+            font-size: 24px;
         }
         .menu {
             margin: 20px 0;
         }
-        .menu button {
-            margin: 10px;
-            padding: 10px 20px;
+        .menu select, .menu button {
+            padding: 10px;
             font-size: 16px;
-            background-color: #1f1f1f;
+            margin: 10px;
+        }
+        .menu button {
+            background-color: #555555;
             color: #ffffff;
             border: none;
             cursor: pointer;
@@ -34,80 +37,65 @@
             background-color: #333333;
         }
         .chart-container {
-            display: flex;
-            flex-wrap: wrap; /* Allows wrapping if the content overflows */
-            justify-content: center; /* Center all items */
-            background-color: #333333;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: #cccccc;
+            padding: 50px auto;
             margin: 20px auto;
+            border-radius: 20px;
             width: 90%;
-            border: 1px solid #444444;
-        }
-
-        .chart-row {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 50px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            height: auto;
         }
         .chart-item {
-            width: 45%;
-            margin: 0 20px;
+            width: 100%;
+            height: 500px;
         }
         footer {
-            background-color: #1f1f1f;
+            background-color: #333333;
             color: #ffffff;
             padding: 20px;
-            position: relative;
-            bottom: 0;
-            width: 100%;
+            text-align: left;
         }
         .footer-box {
             display: flex;
-            justify-content: space-between;
-            margin: 0;
-            max-width: 2200px;
-            
+            justify-content: space-around;
+            margin: 0 auto;
+            padding: 0 20px;
         }
         .footer-box div {
-            text-align: center;
-            padding: 0 80px; /* Add horizontal padding between the divs */
+            text-align: left;
         }
-        footer b {
-            display: block;
-            margin-bottom: 10px;
+        .dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        .dark-mode .chart-container {
+            background-color: #444444;
+        }
+        .dark-mode footer {
+            background-color: #1f1f1f;
+            color: #ffffff;
         }
     </style>
 </head>
 <body>
-    <h1>Stock Analysis: Oil Sector</h1>
+    <h1>Stock Analysis: Oil and Telecom Sectors</h1>
 
-    <!-- Navigation Menu -->
+    <!-- Drop-down for theme selection -->
     <div class="menu">
-        <button onclick="window.location.href='#'">Index Page</button>
-        <button onclick="showOilCharts()">Oil Stock</button>
-        <button onclick="window.location.href='#'">Telecom Stock</button>
+        <select id="chartTheme" onchange="toggleCharts()">
+            <option value="sectorComparison">Sector Comparison</option>
+            <option value="companyComparison">Company Comparison</option>
+            <option value="volume">Volume</option>
+            <option value="volatility">Volatility</option>
+            <option value="roi">Cumulative ROI</option>
+        </select>
+        <button onclick="redirectToInvestmentRank()">Investment Rank</button>
+        <button onclick="toggleMode()">Toggle Dark/Light Mode</button>
     </div>
 
-    <!-- Oil Charts -->
-    <div id="oilCharts" class="chart-container">
-        <div class="chart-row">
-            <div id="oilPercentageChange" class="chart-item">
-                <canvas id="oilPercentageChangeChart"></canvas>
-            </div>
-            <div id="oilVolume" class="chart-item">
-                <canvas id="oilVolumeChart"></canvas>
-            </div>
-        </div>
-        <div class="chart-row">
-            <div id="oilVolatility" class="chart-item">
-                <canvas id="oilVolatilityChart"></canvas>
-            </div>
-            <div id="oilCumulativeROI" class="chart-item">
-                <canvas id="oilCumulativeROIChart"></canvas>
-            </div>
-        </div>
+    <!-- Chart Container for displaying one chart -->
+    <div id="chartContainer" class="chart-container">
+        <div id="comparisonChart" class="chart-item"></div>
     </div>
 
     <footer>
@@ -128,109 +116,131 @@
     </footer>
 
     <script>
-        // Load the data and render the charts
-        window.onload = function () {
-            // Load the oil data
-            d3.json("../data/outputs/oil_database.json").then(function(oilData) {
-                renderOilCharts(oilData);
-            });
-        };
+        // Load Google Charts
+        google.charts.load('current', { packages: ['corechart'] });
 
-        // Function to show Oil Charts
-        function showOilCharts() {
-            document.getElementById("oilCharts").style.display = "block";
+        // Toggle between dark mode and light mode
+        function toggleMode() {
+            document.body.classList.toggle('dark-mode');
         }
 
-        // Function to render oil charts
-        function renderOilCharts(data) {
-            var labels = [];
-            var oilPercentageChange = [];
-            var oilVolume = [];
-            var oilVolatility = [];
-            var oilCumulativeROI = [];
+        // Redirect to the investment rank subpage
+        function redirectToInvestmentRank() {
+            window.location.href = 'investment_rank.html';
+        }
 
-            data.oil_data.forEach(function(d) {
-                labels.push(d.Quarter);
-                oilPercentageChange.push(d["Percentage Change"]);
-                oilVolume.push(d.Volume / 100000000); // Convert to Hundreds of Millions
-                oilVolatility.push(d.Volatility);
-                oilCumulativeROI.push(d["Cumulative ROI on $1500 ($)"]);
+        // Function to load and render charts based on theme
+        function toggleCharts() {
+            const theme = document.getElementById("chartTheme").value;
+            if (theme === 'sectorComparison') {
+                loadSectorComparisonChart();
+            } else if (theme === 'companyComparison') {
+                loadCompanyComparisonChart();
+            }
+        }
+
+        // Load both oil and telecom data for sector comparison (one line per sector)
+        function loadSectorComparisonChart() {
+            Promise.all([
+                d3.json("../data/outputs/oil_database.json"),
+                d3.json("../data/outputs/telecom_database.json")
+            ]).then(([oilData, telecomData]) => {
+                const oilSectorAvg = aggregateBySector(oilData.oil_data);
+                const telecomSectorAvg = aggregateBySector(telecomData.telecom_data);
+                renderSectorComparisonChart(oilSectorAvg, telecomSectorAvg);
+            });
+        }
+
+        // Aggregate data by sector for sector comparison
+        function aggregateBySector(data) {
+            const quarters = [...new Set(data.map(d => d.Quarter))];
+            return quarters.map(quarter => {
+                const quarterData = data.filter(d => d.Quarter === quarter);
+                const avgChange = quarterData.reduce((sum, d) => sum + d["Percentage Change"], 0) / quarterData.length;
+                return { quarter, avgChange };
+            });
+        }
+
+        // Render sector comparison chart
+        function renderSectorComparisonChart(oilData, telecomData) {
+            let dataTable = new google.visualization.DataTable();
+            dataTable.addColumn('string', 'Quarter');
+            dataTable.addColumn('number', 'Oil Sector');
+            dataTable.addColumn('number', 'Telecom Sector');
+
+            oilData.forEach((d, i) => {
+                const telecomChange = telecomData[i] ? telecomData[i].avgChange : null;
+                dataTable.addRow([d.quarter, d.avgChange, telecomChange]);
             });
 
-            // Render all charts as "spline" (curved lines)
-            var options = {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: []
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    elements: {
-                        line: {
-                            tension: 0.4 // This makes the line curved (spline)
-                        }
-                    },
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: '#ffffff'
-                            }
-                        },
-                        y: {
-                            ticks: {
-                                color: '#ffffff'
-                            }
-                        }
-                    }
-                }
+            const options = {
+                title: 'Sector Comparison: Percentage Change',
+                curveType: 'function',
+                legend: { position: 'bottom' },
+                backgroundColor: { fill: '#cccccc' },
+                hAxis: { title: 'Quarter' },
+                vAxis: { title: 'Percentage Change (%)' },
+                chartArea: { width: '80%', height: '70%' },
+                gridlines: { color: '#e0e0e0', count: 5 }
             };
 
-            // Oil Stock Percentage Change Chart
-            options.data.datasets = [{
-                label: 'Percentage Change',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                data: oilPercentageChange
-            }];
-            var ctx1 = document.getElementById('oilPercentageChangeChart').getContext('2d');
-            new Chart(ctx1, options);
-
-            // Oil Stock Volume Chart
-            options.data.datasets = [{
-                label: 'Volume (Hundreds of Millions)',
-                backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                borderColor: 'rgba(255, 159, 64, 1)',
-                data: oilVolume
-            }];
-            var ctx2 = document.getElementById('oilVolumeChart').getContext('2d');
-            new Chart(ctx2, options);
-
-            // Oil Stock Volatility Chart
-            options.data.datasets = [{
-                label: 'Volatility',
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                borderColor: 'rgba(153, 102, 255, 1)',
-                data: oilVolatility
-            }];
-            var ctx3 = document.getElementById('oilVolatilityChart').getContext('2d');
-            new Chart(ctx3, options);
-
-            // Cumulative ROI on $1500 Chart
-            options.data.datasets = [{
-                label: 'Cumulative ROI on $1500 ($)',
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                data: oilCumulativeROI
-            }];
-            var ctx4 = document.getElementById('oilCumulativeROIChart').getContext('2d');
-            new Chart(ctx4, options);
+            const chart = new google.visualization.LineChart(document.getElementById('comparisonChart'));
+            chart.draw(dataTable, options);
         }
+
+        // Load both oil and telecom data for company comparison (one line per company)
+        function loadCompanyComparisonChart() {
+            Promise.all([
+                d3.json("../data/outputs/oil_database.json"),
+                d3.json("../data/outputs/telecom_database.json")
+            ]).then(([oilData, telecomData]) => {
+                const combinedData = [
+                    ...oilData.oil_data.map(d => ({ ...d, sector: 'Oil' })),
+                    ...telecomData.telecom_data.map(d => ({ ...d, sector: 'Telecom' }))
+                ];
+                renderCompanyComparisonChart(combinedData);
+            });
+        }
+
+        // Render company comparison chart (one line per company)
+        function renderCompanyComparisonChart(data) {
+            let dataTable = new google.visualization.DataTable();
+            dataTable.addColumn('string', 'Quarter');
+
+            const companies = [...new Set(data.map(d => d.Company))];
+            companies.forEach(company => {
+                dataTable.addColumn('number', company);
+            });
+
+            const quarters = [...new Set(data.map(d => d.Quarter))];
+            quarters.forEach(quarter => {
+                const row = [quarter];
+                companies.forEach(company => {
+                    const companyData = data.find(d => d.Quarter === quarter && d.Company === company);
+                    row.push(companyData ? companyData["Percentage Change"] : null);
+                });
+                dataTable.addRow(row);
+            });
+
+            const options = {
+                title: 'Company Comparison: Percentage Change',
+                curveType: 'function',
+                legend: { position: 'bottom' },
+                backgroundColor: { fill: '#cccccc' },
+                hAxis: { title: 'Quarter' },
+                vAxis: { title: 'Percentage Change (%)' },
+                chartArea: { width: '80%', height: '70%' },
+                gridlines: { color: '#e0e0e0', count: 5 }
+            };
+
+            const chart = new google.visualization.LineChart(document.getElementById('comparisonChart'));
+            chart.draw(dataTable, options);
+        }
+
+        // Initialize with sector comparison chart on page load
+        google.charts.setOnLoadCallback(function() {
+            loadSectorComparisonChart();
+        });
     </script>
 </body>
 </html>
