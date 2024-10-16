@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis: Oil Sector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            color: #000;
+        }
+        .container {
+            margin: 20px;
+            text-align: center;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .chart-container {
+            display: flex;
+            justify-content: space-between;
+            text-align: left;
+        }
+        .chart-box {
+            flex: 1;
+            margin-right: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        footer {
+            margin-top: 30px;
+            background-color: #f1f1f1;
+            padding: 20px;
+            text-align: center;
+            color: #000;
+        }
+        .footer-box {
+            display: flex;
+            justify-content: space-around;
+        }
+        h4 {
+            margin: 10px 0;
+        }
+        select[multiple] {
+            width: 100%;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Stock Analysis: Oil Sector</h1>
+        <h2 id="metricTitle">Metric: Percentage Change</h2>
+
+        <label for="sectorMetric">Choose a metric:</label>
+        <select id="sectorMetric" onchange="updateCharts()">
+            <option value="Percentage Change">Percentage Change</option>
+            <option value="Volume">Volume</option>
+            <option value="Volatility">Volatility</option>
+            <option value="Cumulative ROI on $1500 ($)">Return of Investment</option>
+        </select>
+
+        <h2>Select Companies</h2>
+        <select id="companyFilter" multiple onchange="updateCharts()">
+            <!-- Company options will be dynamically added -->
+        </select>
+
+        <h2>Sector and Company Comparison</h2>
+        <div class="chart-container">
+            <div class="chart-box">
+                <canvas id="sectorChart" width="400" height="200"></canvas>
+            </div>
+            <div class="chart-box">
+                <canvas id="companyChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+
+        <h2>Cumulative ROI Table (2022Q4)</h2>
+        <table id="roiTable">
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Cumulative ROI (%)</th>
+                    <th>Cumulative ROI on $1500 ($)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be inserted here -->
+            </tbody>
+        </table>
+
+        <footer>
+            <div class="footer-box">
+                <div>
+                    <h4>Team Members</h4>
+                    Cassio Sperb, Juan Avila, Kendall Burkett, Patricia Taylor, Rahmeen Zindani
+                </div>
+                <div>
+                    <h4>Project</h4>
+                    Data Visualization Track<br>
+                </div>
+                <div>
+                    <h4>University of Texas</h4>
+                    Bootcamp in Data Analytics<br>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let sectorChart, companyChart;
+
+        // Load data from the JSON file
+        fetch('../data/outputs/stocks_database.json')
+            .then(response => response.json())
+            .then(data => {
+                window.stockData = data;
+                populateCompanyFilter();
+                populateRoiTable(data);
+                updateCharts(); // Initial chart rendering
+            });
+
+        // Populate the multi-select dropdown with company names
+        function populateCompanyFilter() {
+            const companyFilter = document.getElementById('companyFilter');
+            const companies = Array.from(new Set(window.stockData.map(stock => stock.Company)));
+            companies.forEach(company => {
+                const option = document.createElement('option');
+                option.value = company;
+                option.textContent = company;
+                companyFilter.appendChild(option);
+            });
+        }
+
+        // Get the selected companies from the multi-select dropdown
+        function getSelectedCompanies() {
+            const selectedOptions = Array.from(document.getElementById('companyFilter').selectedOptions);
+            return selectedOptions.map(option => option.value);
+        }
+
+        // Function to update both charts and the metric title
+        function updateCharts() {
+            const metric = document.getElementById('sectorMetric').value;
+            document.getElementById('metricTitle').textContent = `Metric: ${metric}`;
+
+            if (sectorChart) sectorChart.destroy();
+            if (companyChart) companyChart.destroy();
+
+            drawSectorChart(metric);
+            drawCompanyChart(metric);
+        }
+
+        // Function to draw sector chart
+        function drawSectorChart(metric) {
+            const ctx = document.getElementById('sectorChart').getContext('2d');
+
+            const oilData = window.stockData.filter(stock => stock.Sector === 'Oil').map(stock => stock[metric]);
+            const telecomData = window.stockData.filter(stock => stock.Sector === 'Telecom').map(stock => stock[metric]);
+            const quarters = window.stockData.filter(stock => stock.Sector === 'Oil').map(stock => stock.Quarter);
+
+            sectorChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: quarters,
+                    datasets: [{
+                        label: 'Oil',
+                        data: oilData,
+                        borderColor: 'blue',
+                        fill: false
+                    },
+                    {
+                        label: 'Telecom',
+                        data: telecomData,
+                        borderColor: 'green',
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Quarter'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: metric
+                            },
+                            grid: {
+                                display: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function to draw company chart with selected companies
+        function drawCompanyChart(metric) {
+            const ctx = document.getElementById('companyChart').getContext('2d');
+            const selectedCompanies = getSelectedCompanies();
+
+            const companies = Array.from(new Set(window.stockData.map(stock => stock.Company)))
+                                  .filter(company => selectedCompanies.length === 0 || selectedCompanies.includes(company));
+
+            const companyData = companies.map(company => {
+                const companyStocks = window.stockData.filter(stock => stock.Company === company);
+                return companyStocks.map(stock => stock[metric]);
+            });
+
+            const quarters = window.stockData.filter(stock => stock.Company === companies[0]).map(stock => stock.Quarter);
+
+            const datasets = companies.map((company, index) => ({
+                label: company,
+                data: companyData[index],
+                borderColor: `hsl(${index * 40}, 70%, 50%)`,
+                fill: false
+            }));
+
+            companyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: quarters,
+                    datasets: datasets
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Quarter'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: metric
+                            },
+                            grid: {
+                                display: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+    // Populate ROI table with 2022Q4 data
+    function populateRoiTable(data) {
+        const roiTable = document.getElementById('roiTable').getElementsByTagName('tbody')[0];
+        const filteredData = data.filter(stock => stock.Quarter === '2022Q4');
+        const sortedData = filteredData.sort((a, b) => b['Cumulative ROI (%)'] - a['Cumulative ROI (%)']);
+        sortedData.forEach(stock => {
+            const row = roiTable.insertRow();
+            row.insertCell(0).textContent = stock.Company;
+        
+            // Format Cumulative ROI (%) as a percentage with two decimal places
+            row.insertCell(1).textContent = `${parseFloat(stock['Cumulative ROI (%)']).toFixed(2)}%`;
+        
+            // Format Cumulative ROI on $1500 ($) as currency with two decimal places
+            row.insertCell(2).textContent = `$${parseFloat(stock['Cumulative ROI on $1500 ($)']).toFixed(2)}`;
+    });
+}
+
+    </script>
+</body>
+</html>
