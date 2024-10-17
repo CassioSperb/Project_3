@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Analysis: Oil Sector</title>
+    <title>Stock Analysis: Oil and Telecom Sector</title>
     <style>
+        h1 {
+            background-color: #f1f1f1;
+        }
         body {
             font-family: Arial, sans-serif;
-            background-color: #fff;
+            background-color: #f1f1f1;
             color: #000;
         }
         .container {
@@ -39,30 +42,35 @@
         th, td {
             padding: 8px;
             text-align: left;
+            background-color: #f1f1f1;
         }
         footer {
             margin-top: 30px;
-            background-color: #f1f1f1;
+            background-color: #4e4d4d;
             padding: 20px;
             text-align: center;
-            color: #000;
+            color: #ffffff;
         }
         .footer-box {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-around;            
         }
         h4 {
             margin: 10px 0;
+            background-color: #4e4d4d;         
         }
         select[multiple] {
-            width: 100%;
-            height: 100px;
+            width: 8%;
+            height: 105px;
+            text-align: center;
+            background-color: #f1f1f1;
+            scrollbar-width: none;        
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Stock Analysis: Oil Sector</h1>
+        <h1>Stock Analysis: Oil and Telecom Sector</h1>
         <h2 id="metricTitle">Metric: Percentage Change</h2>
 
         <label for="sectorMetric">Choose a metric:</label>
@@ -88,7 +96,7 @@
             </div>
         </div>
 
-        <h2>Cumulative ROI Table (2022Q4)</h2>
+        <h2>Return of Investment | Results of 2022Q4</h2>
         <table id="roiTable">
             <thead>
                 <tr>
@@ -152,6 +160,28 @@
             return selectedOptions.map(option => option.value);
         }
 
+        // Function to calculate the mean of the selected metric for each quarter in a given sector
+        function calculateQuarterlyMean(sector, metric) {
+            // Filter data by sector and group by quarter
+            const sectorData = window.stockData.filter(stock => stock.Sector === sector);
+            const groupedByQuarter = sectorData.reduce((acc, stock) => {
+                if (!acc[stock.Quarter]) {
+                    acc[stock.Quarter] = [];
+                }
+                acc[stock.Quarter].push(stock[metric]);
+                return acc;
+            }, {});
+
+            // Calculate mean for each quarter
+            const meanValues = Object.keys(groupedByQuarter).map(quarter => {
+                const values = groupedByQuarter[quarter];
+                const mean = values.reduce((sum, val) => sum + parseFloat(val), 0) / values.length;
+                return mean;
+            });
+
+            return meanValues;
+        }
+
         // Function to update both charts and the metric title
         function updateCharts() {
             const metric = document.getElementById('sectorMetric').value;
@@ -164,27 +194,28 @@
             drawCompanyChart(metric);
         }
 
-        // Function to draw sector chart
+        // Function to draw sector chart with the quarterly means
         function drawSectorChart(metric) {
             const ctx = document.getElementById('sectorChart').getContext('2d');
 
-            const oilData = window.stockData.filter(stock => stock.Sector === 'Oil').map(stock => stock[metric]);
-            const telecomData = window.stockData.filter(stock => stock.Sector === 'Telecom').map(stock => stock[metric]);
-            const quarters = window.stockData.filter(stock => stock.Sector === 'Oil').map(stock => stock.Quarter);
+            // Calculate the mean for each quarter for Oil and Telecom sectors
+            const oilMean = calculateQuarterlyMean('Oil', metric);
+            const telecomMean = calculateQuarterlyMean('Telecom', metric);
+            const quarters = [...new Set(window.stockData.map(stock => stock.Quarter))];  // Extract unique quarters
 
             sectorChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: quarters,
                     datasets: [{
-                        label: 'Oil',
-                        data: oilData,
+                        label: 'Oil - Quarterly Mean',
+                        data: oilMean,
                         borderColor: 'blue',
                         fill: false
                     },
                     {
-                        label: 'Telecom',
-                        data: telecomData,
+                        label: 'Telecom - Quarterly Mean',
+                        data: telecomMean,
                         borderColor: 'green',
                         fill: false
                     }]
@@ -217,8 +248,8 @@
         // Function to draw company chart with selected companies
         function drawCompanyChart(metric) {
             const ctx = document.getElementById('companyChart').getContext('2d');
-            const selectedCompanies = getSelectedCompanies();
 
+            const selectedCompanies = getSelectedCompanies();
             const companies = Array.from(new Set(window.stockData.map(stock => stock.Company)))
                                   .filter(company => selectedCompanies.length === 0 || selectedCompanies.includes(company));
 
@@ -267,23 +298,22 @@
             });
         }
 
-    // Populate ROI table with 2022Q4 data
-    function populateRoiTable(data) {
-        const roiTable = document.getElementById('roiTable').getElementsByTagName('tbody')[0];
-        const filteredData = data.filter(stock => stock.Quarter === '2022Q4');
-        const sortedData = filteredData.sort((a, b) => b['Cumulative ROI (%)'] - a['Cumulative ROI (%)']);
-        sortedData.forEach(stock => {
-            const row = roiTable.insertRow();
-            row.insertCell(0).textContent = stock.Company;
-        
-            // Format Cumulative ROI (%) as a percentage with two decimal places
-            row.insertCell(1).textContent = `${parseFloat(stock['Cumulative ROI (%)']).toFixed(2)}%`;
-        
-            // Format Cumulative ROI on $1500 ($) as currency with two decimal places
-            row.insertCell(2).textContent = `$${parseFloat(stock['Cumulative ROI on $1500 ($)']).toFixed(2)}`;
-    });
-}
-
+        // Populate ROI table with 2022Q4 data
+        function populateRoiTable(data) {
+            const roiTable = document.getElementById('roiTable').getElementsByTagName('tbody')[0];
+            const filteredData = data.filter(stock => stock.Quarter === '2022Q4');
+            const sortedData = filteredData.sort((a, b) => b['Cumulative ROI (%)'] - a['Cumulative ROI (%)']);
+            sortedData.forEach(stock => {
+                const row = roiTable.insertRow();
+                row.insertCell(0).textContent = stock.Company;
+            
+                // Format Cumulative ROI (%) as a percentage with two decimal places
+                row.insertCell(1).textContent = `${parseFloat(stock['Cumulative ROI (%)']).toFixed(2)}%`;
+            
+                // Format Cumulative ROI on $1500 ($) as currency with two decimal places
+                row.insertCell(2).textContent = `$${parseFloat(stock['Cumulative ROI on $1500 ($)']).toFixed(2)}`;
+            });
+        }
     </script>
 </body>
 </html>
